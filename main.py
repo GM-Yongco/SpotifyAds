@@ -10,8 +10,6 @@ def main():
     print("\nSTART ----------------------------------------\n")
     from LIBRARIES import spotify_status
 
-
-
     print("\nEND ------------------------------------------\n")
 
 main()

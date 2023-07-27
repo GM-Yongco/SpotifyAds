@@ -1,0 +1,2 @@
+1. run innit_references 
+- and add your ID and secret in the references folder
