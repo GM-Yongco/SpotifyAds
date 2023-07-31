@@ -1,9 +1,8 @@
 # Description     : Code that will impress u ;)
-# Author          : G.M. Yongco && Yoshi Hirishima
+# Author          : G.M. Yongco
 # IMPORTS -----------------------------------------------------------------------------------------
 import base64
 import requests #note to self: study this library
-
 
 # SPOTIPY IMPORTS ---------------------------------------------------------------------------------
 import spotipy
