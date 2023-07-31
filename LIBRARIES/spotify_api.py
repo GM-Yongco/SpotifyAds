@@ -14,12 +14,16 @@ REDIRECT_URI = open("./REFERENCES/redirect_uri.txt", "r").read()
 
 
 # MAIN --------------------------------------------------------------------------------------------
-def exception_result_none(result):
+def result_is_none(result):
 	result = str(result)
 
-	if(str(result) == 'none'):
-		raise Exception("Result was none")
+	return_val = 0
+	if(str(result) == 'None'):
+		return_val = 1
+	
+	return return_val
 
+# meant to be a boolean
 def current_playing_is_ad():
 	custom_scope = "user-read-currently-playing"
 
@@ -33,14 +37,15 @@ def current_playing_is_ad():
 	)
 
 	result = client.currently_playing()
-	exception_result_none(result)
-
-	result_type = result['currently_playing_type']
-	
 	return_val = 0
-	if(result_type == 'ad'):
-		return_val = 1
-	
+
+	if (result_is_none(result)):
+		print("result is none")
+	else:
+		result_type = result['currently_playing_type']
+		if(result_type == 'ad'):
+			return_val = 1
+		
 	return return_val
 
 def current_playing_song():
@@ -54,11 +59,13 @@ def current_playing_song():
 			redirect_uri    = REDIRECT_URI
 		)
 	)
-	result = client.currently_playing()
-	exception_result_none(result)
 
+	result = client.currently_playing()
 	return_val = "currently_playing_type is an ad"
-	if(result['currently_playing_type'] == 'ad'):
+
+	if(result_is_none(result)):
+		return_val = "result_is_none"
+	elif(result['currently_playing_type'] == 'ad'):
 		return_val = "currently_playing_type is an ad"
 	else:
 		return_val = str(result['item']['name'])
