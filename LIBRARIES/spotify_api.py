@@ -41,10 +41,8 @@ def current_playing_is_ad():
 
 	if (result_is_none(result)):
 		print("result is none")
-	else:
-		result_type = result['currently_playing_type']
-		if(result_type == 'ad'):
-			return_val = 1
+	elif(result['currently_playing_type'] == 'ad'):
+		return_val = 1
 		
 	return return_val
 
