@@ -36,6 +36,12 @@ else:
 # CLIENT UTILITY FUNCTIONS
 def spotify_open():
 	Popen([path], shell=True)
+	while True:
+		try:
+			win32gui.EnumWindows(open_Hloop, None)
+		except
+			break
+
 
 def spotify_close():
 	os.system("taskkill /f /im spotify.exe") # it might print output to console. tell me if u want it removed :D
@@ -48,6 +54,11 @@ def spotify_play():
 		pass
 
 
+
+def open_Hloop(hwnd, arg):
+	if win32gui.GetWindowText(hwnd).startswith("Spotify") and win32gui.GetClassName(hwnd) == "Chrome_WidgetWin_0":
+		win32gui.ShowWindow(hwnd, SW_HIDE)
+		return False
 
 def play_Hloop(hwnd, args):
 	if (win32gui.GetWindowText(hwnd).startswith("Spotify") or win32gui.GetWindowText(hwnd).endswith(args[1])) and win32gui.GetClassName(hwnd) == "Chrome_WidgetWin_0":
