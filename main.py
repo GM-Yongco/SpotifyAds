@@ -18,5 +18,7 @@ while(True):
 		su.spotify_close()
 		time.sleep(1)
 		su.spotify_open()
+		time.sleep(15)
+		su.spotify_play()
 
 	time.sleep(time_delta)
