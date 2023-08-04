@@ -7,18 +7,10 @@ from time import time
 import os
 
 # DEPENDENCIES (pywin32)
-# Not sure but it might raise a missing DLL error
 from win32 import win32gui
 from win32.lib.win32con import *
 from spotify_api import current_playing_song
 
-# use this instead:
-#
-# from spotify_utils import *
-#
-# to leave other variables undefined in the main and well, for convenience
-# it might need to use this one if it raises ImportError(Location Unknown):
-#
 # from LIBRARIES.spotify_utils import *
 __all__ = ["spotify_open", "spotify_close", "spotify_play"] 
 
@@ -30,7 +22,7 @@ if os.path.exists(os.environ['appdata'] + "\\Spotify\\Spotify.exe"):
 elif os.path.exists(os.environ['localappdata'] + "\\Microsoft\\WindowsApps\\Spotify.exe"):
 	path += os.environ['localappdata'] + "\\Microsoft\\WindowsApps\\Spotify.exe"
 else:
-	raise ImportError("Spotify not Found.") # we can ask for install location from user and make a REFERENCES txt file for it
+	raise ImportError("Spotify not Found.")
 
 
 
@@ -45,7 +37,7 @@ def spotify_open():
 			break
 
 def spotify_close():
-	os.system("taskkill /f /im spotify.exe") # it might print output to console. tell me if u want it removed :D
+	os.system("taskkill /f /im spotify.exe")
 
 def spotify_play():
 	try:
@@ -56,6 +48,7 @@ def spotify_play():
 
 
 
+# EnumWindows FUNCTIONS
 def open_Hloop(hwnd, arg):
 	if win32gui.GetWindowText(hwnd).startswith("Spotify") and win32gui.GetClassName(hwnd) == "Chrome_WidgetWin_0":
 		win32gui.PostMessage(hwnd, WM_SYSCOMMAND, SC_NEXTWINDOW, 0)
@@ -79,11 +72,12 @@ def play_Hloop(hwnd, args):
 
 		raise EndIteration
 
+# CUSTOM EXCEPTION
 class EndIteration(Exception):
 	pass
 
 
-# TO TEST THE MODULE (feel free to just run the script for testing)
+# DEBUGGER
 if __name__ == '__main__':
 	input("Start Spotify?")
 	spotify_open()
