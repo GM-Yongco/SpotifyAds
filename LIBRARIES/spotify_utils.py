@@ -3,6 +3,7 @@
 
 # BUILT-IN MODULES
 from subprocess import run
+from time import time
 import os
 
 # DEPENDENCIES (pywin32)
@@ -36,12 +37,12 @@ else:
 # CLIENT UTILITY FUNCTIONS
 def spotify_open():
 	run([path])
-	while True:
+	sTime = time()
+	while (time() - sTime) <= 5:
 		try:
 			win32gui.EnumWindows(open_Hloop, None)
 		except:
 			break
-
 
 def spotify_close():
 	os.system("taskkill /f /im spotify.exe") # it might print output to console. tell me if u want it removed :D
@@ -49,16 +50,15 @@ def spotify_close():
 def spotify_play():
 	try:
 		win32gui.EnumWindows(play_Hloop, [VK_SPACE, current_playing_song()])
-		raise RuntimeError("Failed to play/pause")
-	except:
-		pass
+	except EndIteration:
+		return
+	raise RuntimeError("Failed to play/pause")
 
 
 
 def open_Hloop(hwnd, arg):
 	if win32gui.GetWindowText(hwnd).startswith("Spotify") and win32gui.GetClassName(hwnd) == "Chrome_WidgetWin_0":
-		win32gui.ShowWindow(hwnd, SW_NORMAL)
-		win32gui.ShowWindow(hwnd, SW_HIDE)
+		win32gui.PostMessage(hwnd, WM_SYSCOMMAND, SC_NEXTWINDOW, 0)
 		return False
 
 def play_Hloop(hwnd, args):
@@ -75,9 +75,12 @@ def play_Hloop(hwnd, args):
 		win32gui.PostMessage(hwnd, WM_ACTIVATE, WA_INACTIVE, 0)
 
 		if wMin:
-			win32gui.ShowWindow(hwnd, SW_HIDE)
+			win32gui.PostMessage(hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0)
 
-		return False
+		raise EndIteration
+
+class EndIteration(Exception):
+	pass
 
 
 # TO TEST THE MODULE (feel free to just run the script for testing)
