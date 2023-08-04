@@ -33,7 +33,7 @@ def spotify_open():
 	while (time() - sTime) <= 5:
 		try:
 			win32gui.EnumWindows(open_Hloop, None)
-		except:
+		except EndIteration:
 			break
 
 def spotify_close():
@@ -52,7 +52,7 @@ def spotify_play():
 def open_Hloop(hwnd, arg):
 	if win32gui.GetWindowText(hwnd).startswith("Spotify") and win32gui.GetClassName(hwnd) == "Chrome_WidgetWin_0":
 		win32gui.PostMessage(hwnd, WM_SYSCOMMAND, SC_NEXTWINDOW, 0)
-		return False
+		raise EndIteration
 
 def play_Hloop(hwnd, args):
 	if (win32gui.GetWindowText(hwnd).startswith("Spotify") or win32gui.GetWindowText(hwnd).endswith(args[1])) and win32gui.GetClassName(hwnd) == "Chrome_WidgetWin_0":
