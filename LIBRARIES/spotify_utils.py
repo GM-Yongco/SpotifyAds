@@ -2,7 +2,7 @@
 # Author          : J.Z. Reyes
 
 # BUILT-IN MODULES
-from subprocess import run
+from subprocess import run, Popen
 from time import time
 import os
 
@@ -28,7 +28,8 @@ else:
 
 # CLIENT UTILITY FUNCTIONS
 def spotify_open():
-	run([path])
+	# run([path])
+	Popen([path])
 	sTime = time()
 	while (time() - sTime) <= 5:
 		try:
