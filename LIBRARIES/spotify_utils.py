@@ -2,7 +2,7 @@
 # Author          : J.Z. Reyes
 
 # BUILT-IN MODULES
-from subprocess import Popen
+from subprocess import run
 import os
 
 # DEPENDENCIES (pywin32)
@@ -35,7 +35,7 @@ else:
 
 # CLIENT UTILITY FUNCTIONS
 def spotify_open():
-	Popen([path], shell=True)
+	run([path])
 	while True:
 		try:
 			win32gui.EnumWindows(open_Hloop, None)
