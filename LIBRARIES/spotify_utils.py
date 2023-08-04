@@ -3,21 +3,14 @@
 
 # BUILT-IN MODULES
 from subprocess import run
+from time import time
 import os
 
 # DEPENDENCIES (pywin32)
-# Not sure but it might raise a missing DLL error
 from win32 import win32gui
 from win32.lib.win32con import *
 from spotify_api import current_playing_song
 
-# use this instead:
-#
-# from spotify_utils import *
-#
-# to leave other variables undefined in the main and well, for convenience
-# it might need to use this one if it raises ImportError(Location Unknown):
-#
 # from LIBRARIES.spotify_utils import *
 __all__ = ["spotify_open", "spotify_close", "spotify_play"] 
 
@@ -29,37 +22,37 @@ if os.path.exists(os.environ['appdata'] + "\\Spotify\\Spotify.exe"):
 elif os.path.exists(os.environ['localappdata'] + "\\Microsoft\\WindowsApps\\Spotify.exe"):
 	path += os.environ['localappdata'] + "\\Microsoft\\WindowsApps\\Spotify.exe"
 else:
-	raise ImportError("Spotify not Found.") # we can ask for install location from user and make a REFERENCES txt file for it
+	raise ImportError("Spotify not Found.")
 
 
 
 # CLIENT UTILITY FUNCTIONS
 def spotify_open():
 	run([path])
-	while True:
+	sTime = time()
+	while (time() - sTime) <= 5:
 		try:
 			win32gui.EnumWindows(open_Hloop, None)
-		except:
+		except EndIteration:
 			break
 
-
 def spotify_close():
-	os.system("taskkill /f /im spotify.exe") # it might print output to console. tell me if u want it removed :D
+	os.system("taskkill /f /im spotify.exe")
 
 def spotify_play():
 	try:
 		win32gui.EnumWindows(play_Hloop, [VK_SPACE, current_playing_song()])
-		raise RuntimeError("Failed to play/pause")
-	except:
-		pass
+	except EndIteration:
+		return
+	raise RuntimeError("Failed to play/pause")
 
 
 
+# EnumWindows FUNCTIONS
 def open_Hloop(hwnd, arg):
 	if win32gui.GetWindowText(hwnd).startswith("Spotify") and win32gui.GetClassName(hwnd) == "Chrome_WidgetWin_0":
-		win32gui.ShowWindow(hwnd, SW_NORMAL)
-		win32gui.ShowWindow(hwnd, SW_HIDE)
-		return False
+		win32gui.PostMessage(hwnd, WM_SYSCOMMAND, SC_NEXTWINDOW, 0)
+		raise EndIteration
 
 def play_Hloop(hwnd, args):
 	if (win32gui.GetWindowText(hwnd).startswith("Spotify") or win32gui.GetWindowText(hwnd).endswith(args[1])) and win32gui.GetClassName(hwnd) == "Chrome_WidgetWin_0":
@@ -75,12 +68,16 @@ def play_Hloop(hwnd, args):
 		win32gui.PostMessage(hwnd, WM_ACTIVATE, WA_INACTIVE, 0)
 
 		if wMin:
-			win32gui.ShowWindow(hwnd, SW_HIDE)
+			win32gui.PostMessage(hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0)
 
-		return False
+		raise EndIteration
+
+# CUSTOM EXCEPTION
+class EndIteration(Exception):
+	pass
 
 
-# TO TEST THE MODULE (feel free to just run the script for testing)
+# DEBUGGER
 if __name__ == '__main__':
 	input("Start Spotify?")
 	spotify_open()
