@@ -9,10 +9,9 @@ import os
 # DEPENDENCIES (pywin32)
 from win32 import win32gui
 from win32.lib.win32con import *
-from spotify_api import current_playing_song
 
 # from LIBRARIES.spotify_utils import *
-__all__ = ["spotify_open", "spotify_close", "spotify_play"] 
+__all__ = ["spotify_open", "spotify_close", "spotify_play", "spotify_pause"] 
 
 # INITIALIZE SPOTIFY LOCATION
 path = ""
@@ -42,10 +41,17 @@ def spotify_close():
 
 def spotify_play():
 	try:
-		win32gui.EnumWindows(play_Hloop, [VK_SPACE, current_playing_song()])
+		win32gui.EnumWindows(play_Hloop, [VK_SPACE, False])
 	except EndIteration:
 		return
-	raise RuntimeError("Failed to play/pause")
+	raise RuntimeError("Failed to play")
+
+def spotify_pause(songName):
+	try:
+		win32gui.EnumWindows(play_Hloop, [VK_SPACE, songName])
+	except EndIteration:
+		return
+	raise RuntimeError("Failed to pause")
 
 
 
@@ -56,22 +62,28 @@ def open_Hloop(hwnd, arg):
 		raise EndIteration
 
 def play_Hloop(hwnd, args):
-	if (win32gui.GetWindowText(hwnd).startswith("Spotify") or win32gui.GetWindowText(hwnd).endswith(args[1])) and win32gui.GetClassName(hwnd) == "Chrome_WidgetWin_0":
+	if args[1]:
+		if (win32gui.GetWindowText(hwnd).startswith("Spotify") or win32gui.GetWindowText(hwnd).endswith(args[1])) and win32gui.GetClassName(hwnd) == "Chrome_WidgetWin_0":
+			client_Interact(hwnd, args[0])
+			raise EndIteration
+	else:
+		if win32gui.GetWindowText(hwnd).startswith("Spotify") and win32gui.GetClassName(hwnd) == "Chrome_WidgetWin_0":
+			client_Interact(hwnd, args[0])
+			raise EndIteration
 
-		if win32gui.IsIconic(hwnd):
-			wMin = True
-		else:
-			wMin = False
+def client_Interact(hwnd, key)
+	if win32gui.IsIconic(hwnd):
+		wMin = True
+	else:
+		wMin = False
 
-		win32gui.PostMessage(hwnd, WM_ACTIVATE, WA_CLICKACTIVE, 0)
-		win32gui.PostMessage(hwnd, WM_KEYDOWN, args[0], 0)
-		win32gui.PostMessage(hwnd, WM_KEYUP, args[0], 0)
-		win32gui.PostMessage(hwnd, WM_ACTIVATE, WA_INACTIVE, 0)
+	win32gui.PostMessage(hwnd, WM_ACTIVATE, WA_CLICKACTIVE, 0)
+	win32gui.PostMessage(hwnd, WM_KEYDOWN, key, 0)
+	win32gui.PostMessage(hwnd, WM_KEYUP, key, 0)
+	win32gui.PostMessage(hwnd, WM_ACTIVATE, WA_INACTIVE, 0)
 
-		if wMin:
-			win32gui.PostMessage(hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0)
-
-		raise EndIteration
+	if wMin:
+		win32gui.PostMessage(hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0)
 
 # CUSTOM EXCEPTION
 class EndIteration(Exception):
