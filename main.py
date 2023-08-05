@@ -20,7 +20,7 @@ while(True):
 		su.spotify_close()
 		time.sleep(1)
 		su.spotify_open()
-		time.sleep(1)
+		time.sleep(30)
 		su.spotify_pause_play()
 
 	time.sleep(time_delta)

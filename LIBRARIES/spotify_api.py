@@ -32,6 +32,21 @@ def current_playing_is_ad():
 		
 	return return_val
 
+def is_playing():
+	result = current_playing_client.currently_playing()
+	return_val = False
+
+	if(str(result) == 'None'):
+		print("result_is_none")
+	elif(result['currently_playing_type'] == 'ad'):
+		print("currently_playing_type is an ad")
+	else:
+		if(str(result['is_playing']) == "True"):
+			return_val = True
+	
+	return return_val
+
+# reminder, this func returns a string
 def current_playing_song():
 
 	result = current_playing_client.currently_playing()
@@ -46,20 +61,7 @@ def current_playing_song():
 
 	return return_val
 
-# reminder, this func returns a string
-def is_playing():
-	result = current_playing_client.currently_playing()
-	return_val = "currently_playing_type is an ad"
 
-	if(str(result) == 'None'):
-		return_val = "result_is_none"
-	elif(result['currently_playing_type'] == 'ad'):
-		return_val = "currently_playing_type is an ad"
-	else:
-		return_val = str(result['is_playing'])
-	
-	return return_val
-	
 
 def get_device_id():
 	custom_scope = "user-read-playback-state"
