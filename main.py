@@ -8,6 +8,8 @@ from LIBRARIES import spotify_api as sa
 from LIBRARIES import spotify_utils as su
 
 # MAIN --------------------------------------------------------------------------------------------
+su.spotify_open()
+
 time_delta = 5
 time_total = 0
 while(True):
@@ -18,7 +20,7 @@ while(True):
 		su.spotify_close()
 		time.sleep(1)
 		su.spotify_open()
-		time.sleep(15)
-		su.spotify_play()
+		time.sleep(1)
+		su.spotify_pause_play()
 
 	time.sleep(time_delta)

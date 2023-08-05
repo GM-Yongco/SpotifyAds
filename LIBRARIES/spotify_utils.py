@@ -13,7 +13,7 @@ from win32.lib.win32con import *
 # from LIBRARIES.spotify_utils import *
 __all__ = ["spotify_open", "spotify_close", "spotify_play", "spotify_pause"] 
 
-# INITIALIZE SPOTIFY LOCATION
+# INITIALIZE SPOTIFY LOCATION ---------------------------------------------------------------------
 path = ""
 
 if os.path.exists(os.environ['appdata'] + "\\Spotify\\Spotify.exe"):
@@ -23,9 +23,7 @@ elif os.path.exists(os.environ['localappdata'] + "\\Microsoft\\WindowsApps\\Spot
 else:
 	raise ImportError("Spotify not Found.")
 
-
-
-# CLIENT UTILITY FUNCTIONS
+# CLIENT UTILITY FUNCTIONS ------------------------------------------------------------------------
 def spotify_open():
 	# run([path])
 	Popen([path])
@@ -39,14 +37,9 @@ def spotify_open():
 def spotify_close():
 	os.system("taskkill /f /im spotify.exe")
 
-def spotify_play():
-	try:
-		win32gui.EnumWindows(play_Hloop, [VK_SPACE, False])
-	except EndIteration:
-		return
-	raise RuntimeError("Failed to play")
-
-def spotify_pause(songName):
+# has song name parameter cuz the window changes name 
+# when downloaded form the microsoft store
+def spotify_pause_play(songName = False):
 	try:
 		win32gui.EnumWindows(play_Hloop, [VK_SPACE, songName])
 	except EndIteration:
@@ -55,7 +48,7 @@ def spotify_pause(songName):
 
 
 
-# EnumWindows FUNCTIONS
+# EnumWindows FUNCTIONS ---------------------------------------------------------------------------
 def open_Hloop(hwnd, arg):
 	if win32gui.GetWindowText(hwnd).startswith("Spotify") and win32gui.GetClassName(hwnd) == "Chrome_WidgetWin_0":
 		win32gui.PostMessage(hwnd, WM_SYSCOMMAND, SC_NEXTWINDOW, 0)
@@ -96,12 +89,12 @@ if __name__ == '__main__':
 	spotify_open()
 	os.system("cls")
 	input("Play/Pause?")
-	spotify_play()
+	spotify_pause_play()
 	os.system("cls")
-	input("Play/Pause? (2nd)")
-	spotify_play()
+	input("Play/Pause?")
+	spotify_pause_play()
 	os.system("cls")
 	input("Close Spotify?")
 	spotify_close()
 	os.system("cls")
-	input("Press any key to close. . .")
+	input("Press any key to end program. . .")
