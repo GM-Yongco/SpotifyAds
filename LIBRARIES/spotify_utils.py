@@ -71,7 +71,7 @@ def play_Hloop(hwnd, args):
 			client_Interact(hwnd, args[0])
 			raise EndIteration
 
-def client_Interact(hwnd, key)
+def client_Interact(hwnd, key):
 	if win32gui.IsIconic(hwnd):
 		wMin = True
 	else:
